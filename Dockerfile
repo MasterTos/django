@@ -10,7 +10,7 @@ WORKDIR /code
 ONBUILD COPY . .
 
 ONBUILD RUN apk add --no-cache --virtual .build-deps \
-    ca-certificates gcc postgresql-dev linux-headers musl-dev \
+    ca-certificates gcc git postgresql-dev linux-headers musl-dev \
     libffi-dev jpeg-dev zlib-dev \
     && pip install -r requirements.txt \
     && find /usr/local \
