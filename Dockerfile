@@ -25,7 +25,7 @@ RUN pip install django==$DJANGO_VERSION \
 ONBUILD COPY . .
 
 ONBUILD RUN apk add --no-cache --virtual .build-deps \
-    ca-certificates gcc git postgresql-dev linux-headers musl-dev \
+    ca-certificates gcc g++ git postgresql-dev linux-headers musl-dev \
     libffi-dev jpeg-dev zlib-dev \
     && pip install -r requirements.txt \
     && find /usr/local \
