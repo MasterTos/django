@@ -1,43 +1,16 @@
-FROM python:3.6-alpine
-LABEL maintainer="MasterTos@yahoo.com"
+FROM python:3-alpine as build
+LABEL maintainer="Wisit Tipcheun <MasterTos@yahoo.com>"
 ENV PYTHONUNBUFFERED 1
 
-# Creating working directory
-RUN mkdir /code
+WORKDIR /install
+
+ENV DJANGO_VERSION=2.1.2
+RUN pip install --install-option="--prefix=/install" --no-cache-dir django==$DJANGO_VERSION
+ONBUILD ADD ./requirements.txt /requirements.txt
+ONBUILD RUN  apk add --update --no-cache python3-dev postgresql-dev musl-dev build-base linux-header \
+    ca-certificates gcc graphviz g++ git libffi-dev jpeg-dev zlib-dev \
+    && pip install --install-option="--prefix=/install" --no-cache-dir -r requirements.txt
+
+FROM python:3-alpine
 WORKDIR /code
-
-ENV DJANGO_VERSION=2.0.3
-RUN pip install django==$DJANGO_VERSION \
-    && find /usr/local \
-        \( -type d -a -name test -o -name tests \) \
-        -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
-        -exec rm -rf '{}' + \
-    && runDeps="$( \
-        scanelf --needed --nobanner --recursive /usr/local \
-                | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
-                | sort -u \
-                | xargs -r apk info --installed \
-                | sort -u \
-    )" \
-    && apk add --virtual .rundeps $runDeps
-
-# Copying requirements
-ONBUILD COPY . .
-
-ONBUILD RUN apk add --no-cache --virtual .build-deps \
-    ca-certificates gcc g++ git postgresql-dev linux-headers musl-dev \
-    libffi-dev jpeg-dev zlib-dev \
-    && pip install -r requirements.txt \
-    && find /usr/local \
-        \( -type d -a -name test -o -name tests \) \
-        -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
-        -exec rm -rf '{}' + \
-    && runDeps="$( \
-        scanelf --needed --nobanner --recursive /usr/local \
-                | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
-                | sort -u \
-                | xargs -r apk info --installed \
-                | sort -u \
-    )" \
-    && apk add --virtual .rundeps $runDeps \
-    && apk del .build-deps
+ONBUILD COPY --from=build /install /usr/local
