@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /code
 
-ENV DJANGO_VERSION=2.0.3
+ENV DJANGO_VERSION=2.1.2
 RUN pip install django==$DJANGO_VERSION \
     && find /usr/local \
         \( -type d -a -name test -o -name tests \) \
@@ -40,4 +40,4 @@ ONBUILD RUN apk add --no-cache --virtual .build-deps \
     && apk add --virtual .rundeps $runDeps \
     && apk del .build-deps
     
-    ONBUILD COPY . .
+ONBUILD COPY . .
