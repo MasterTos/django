@@ -20,7 +20,7 @@ RUN pip install django==$DJANGO_VERSION \
     && apk add --virtual .rundeps $runDeps
 
 # Copying requirements
-ONBUILD COPY . .
+ONBUILD COPY requirements.txt requirements.txt
 
 ONBUILD RUN apk add --no-cache --virtual .build-deps \
     ca-certificates gcc git postgresql-dev linux-headers musl-dev \
@@ -39,3 +39,5 @@ ONBUILD RUN apk add --no-cache --virtual .build-deps \
     )" \
     && apk add --virtual .rundeps $runDeps \
     && apk del .build-deps
+    
+    ONBUILD COPY . .
