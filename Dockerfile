@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /code
 
-ENV DJANGO_VERSION=2.1.2
+ENV DJANGO_VERSION=2.1.3
 RUN pip install django==$DJANGO_VERSION \
     && find /usr/local \
         \( -type d -a -name test -o -name tests \) \
