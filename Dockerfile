@@ -1,10 +1,10 @@
-FROM python:3-alpine
+FROM python:3.6-alpine
 LABEL maintainer="Wisit Tipcheun <MasterTos@yahoo.com>"
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /code
 
-ENV DJANGO_VERSION=2.1.5
+ENV DJANGO_VERSION=2.1.7
 RUN pip install django==$DJANGO_VERSION \
     && find /usr/local \
         \( -type d -a -name test -o -name tests \) \
